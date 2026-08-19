@@ -48,7 +48,7 @@ export class AiService {
     const response = await mistral.chat.complete({
       model: env.MISTRAL_MODEL,
       messages: [{ role: "user", content: prompt }],
-      responseFormat: { type: "jsonObject" },
+      responseFormat: { type: "json_object" },
       temperature: 0.7,
     });
 
@@ -114,7 +114,7 @@ export class AiService {
     const response = await mistral.chat.complete({
       model: env.MISTRAL_MODEL,
       messages: [{ role: "user", content: prompt }],
-      responseFormat: { type: "jsonObject" },
+      responseFormat: { type: "json_object" },
       temperature: 0.7,
     });
 

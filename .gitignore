@@ -35,3 +35,8 @@ dist-ssr
 .agents/
 .claude/
 grok and claude skill test/
+
+# Environment variables
+.env
+.env.*
+!.env.example

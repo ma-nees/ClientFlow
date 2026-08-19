@@ -16,7 +16,21 @@ export class CampaignsService {
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data;
+    
+    // Map snake_case database columns to camelCase frontend interface
+    return (data || []).map(row => ({
+      ...row,
+      target: row.description || "UNKNOWN",
+      dailyLimit: row.daily_limit,
+      createdAt: row.created_at,
+      leadCount: row.total_leads || 0,
+      generated: 0,
+      approved: row.approved_count || 0,
+      sent: row.sent_count || 0,
+      opened: 0,
+      replies: row.reply_count || 0,
+      interested: row.interested_count || 0,
+    }));
   }
 
   static async getCampaign(userId: string, campaignId: string): Promise<any> {
@@ -27,7 +41,20 @@ export class CampaignsService {
       .single();
 
     if (error) throw new Error(error.message);
-    return data;
+    
+    return {
+      ...data,
+      target: data.description || "UNKNOWN",
+      dailyLimit: data.daily_limit,
+      createdAt: data.created_at,
+      leadCount: data.total_leads || 0,
+      generated: 0,
+      approved: data.approved_count || 0,
+      sent: data.sent_count || 0,
+      opened: 0,
+      replies: data.reply_count || 0,
+      interested: data.interested_count || 0,
+    };
   }
 
   static async createCampaign(userId: string, input: CreateCampaignInput): Promise<any> {
@@ -57,7 +84,19 @@ export class CampaignsService {
       await supabase.from("campaign_leads").insert(links);
     }
 
-    return data;
+    return {
+      ...data,
+      target: data.description || "UNKNOWN",
+      dailyLimit: data.daily_limit,
+      createdAt: data.created_at,
+      leadCount: data.total_leads || 0,
+      generated: 0,
+      approved: data.approved_count || 0,
+      sent: data.sent_count || 0,
+      opened: 0,
+      replies: data.reply_count || 0,
+      interested: data.interested_count || 0,
+    };
   }
 
   static async updateStatus(userId: string, campaignId: string, status: string): Promise<void> {

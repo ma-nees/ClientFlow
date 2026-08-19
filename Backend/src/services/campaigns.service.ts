@@ -41,7 +41,7 @@ export class CampaignsService {
         name: input.name,
         description: input.target,
         daily_limit: input.dailyLimit,
-        status: "ACTIVE",
+        status: "DRAFT",
       })
       .select()
       .single();

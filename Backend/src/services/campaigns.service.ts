@@ -39,7 +39,7 @@ export class CampaignsService {
       .insert({
         user_id: existing?.user_id || "00000000-0000-0000-0000-000000000000",
         name: input.name,
-        target: input.target,
+        description: input.target,
         daily_limit: input.dailyLimit,
         status: "ACTIVE",
       })

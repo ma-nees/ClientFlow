@@ -13,7 +13,7 @@ export const listCampaigns = async (req: AuthenticatedRequest, res: Response, ne
 
 export const getCampaign = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const campaign = await CampaignsService.getCampaign(req.user!.uid, req.params.id);
+    const campaign = await CampaignsService.getCampaign(req.user!.uid, req.params.id as string);
     res.json({ success: true, data: campaign });
   } catch (error) {
     next(error);
@@ -31,7 +31,7 @@ export const createCampaign = async (req: AuthenticatedRequest, res: Response, n
 
 export const updateStatus = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await CampaignsService.updateStatus(req.user!.uid, req.params.id, req.body.status);
+    await CampaignsService.updateStatus(req.user!.uid, req.params.id as string, req.body.status);
     res.json({ success: true, data: { message: "Status updated" } });
   } catch (error) {
     next(error);
@@ -40,7 +40,7 @@ export const updateStatus = async (req: AuthenticatedRequest, res: Response, nex
 
 export const deleteCampaign = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await CampaignsService.deleteCampaign(req.user!.uid, req.params.id);
+    await CampaignsService.deleteCampaign(req.user!.uid, req.params.id as string);
     res.json({ success: true, data: { message: "Campaign deleted" } });
   } catch (error) {
     next(error);

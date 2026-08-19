@@ -31,7 +31,7 @@ try {
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.error("Environment configuration is incomplete. Missing or invalid variables:");
-    error.errors.forEach((e) => {
+    (error as any).errors.forEach((e: any) => {
       console.error(`- ${e.path.join(".")}: ${e.message}`);
     });
   } else {

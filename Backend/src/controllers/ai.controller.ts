@@ -5,7 +5,7 @@ import { AuthenticatedRequest } from "../middleware/auth.middleware";
 export const generatePitch = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await AiService.generatePitch(id);
+    const result = await AiService.generatePitch(id as string);
     res.json({ success: true, data: result });
   } catch (error) {
     next(error);
@@ -15,7 +15,7 @@ export const generatePitch = async (req: AuthenticatedRequest, res: Response, ne
 export const analyzeLead = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await AiService.analyzeLead(id);
+    const result = await AiService.analyzeLead(id as string);
     res.json({ success: true, data: result });
   } catch (error) {
     next(error);

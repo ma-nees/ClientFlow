@@ -57,6 +57,8 @@ export function EmailReviewPanel({ email }: { email: EmailMessage }) {
     onSuccess: () => toast.success("Regenerating", { description: "A new AI draft is being written." }),
   });
 
+  const isEditable = ["DRAFT", "AI_GENERATED", "NEEDS_REVIEW"].includes(email.status);
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b p-4 sm:p-5">
@@ -90,7 +92,12 @@ export function EmailReviewPanel({ email }: { email: EmailMessage }) {
         <TabsContent value="edit" className="space-y-4 overflow-y-auto p-4 sm:p-5">
           <div className="space-y-1.5">
             <Label htmlFor="email-subject">Subject</Label>
-            <Input id="email-subject" value={subject} onChange={(event) => setSubject(event.target.value)} />
+            <Input 
+              id="email-subject" 
+              value={subject} 
+              onChange={(event) => setSubject(event.target.value)} 
+              disabled={!isEditable} 
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="email-body">Body</Label>
@@ -98,6 +105,7 @@ export function EmailReviewPanel({ email }: { email: EmailMessage }) {
               id="email-body"
               value={body}
               onChange={(event) => setBody(event.target.value)}
+              disabled={!isEditable}
               className="min-h-[280px] font-mono text-[13px] leading-relaxed"
             />
             <p className="text-xs text-muted-foreground">
@@ -117,16 +125,16 @@ export function EmailReviewPanel({ email }: { email: EmailMessage }) {
       </Tabs>
 
       <div className="flex flex-wrap gap-2 border-t p-4 sm:p-5">
-        <Button onClick={() => approve.mutate()} disabled={approve.isPending}>
+        <Button onClick={() => approve.mutate()} disabled={!isEditable || approve.isPending}>
           <Check className="size-4" aria-hidden /> Approve
         </Button>
-        <Button variant="outline" onClick={() => save.mutate()} disabled={!dirty || save.isPending}>
+        <Button variant="outline" onClick={() => save.mutate()} disabled={!isEditable || !dirty || save.isPending}>
           <Send className="size-4" aria-hidden /> Save draft
         </Button>
-        <Button variant="outline" onClick={() => regenerate.mutate()} disabled={regenerate.isPending}>
+        <Button variant="outline" onClick={() => regenerate.mutate()} disabled={!isEditable || regenerate.isPending}>
           <RefreshCw className="size-4" aria-hidden /> Regenerate
         </Button>
-        <Button variant="ghost" className="text-destructive" onClick={() => reject.mutate()}>
+        <Button variant="ghost" className="text-destructive" onClick={() => reject.mutate()} disabled={!isEditable || reject.isPending}>
           <X className="size-4" aria-hidden /> Reject
         </Button>
       </div>

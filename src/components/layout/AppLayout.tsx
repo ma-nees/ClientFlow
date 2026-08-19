@@ -169,7 +169,7 @@ export function AppLayout({
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="flex size-8 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground"
+                  className="flex size-8 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground shadow-sm ring-1 ring-border/50 transition-all hover:ring-primary/30 hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   aria-label="Account menu"
                 >
                   {initials(user.name)}

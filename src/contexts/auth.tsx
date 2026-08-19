@@ -13,7 +13,7 @@ interface AuthContextValue {
   signOut: () => Promise<void>;
 }
 
-const AuthContext = (globalThis as any).__AuthContext || ((globalThis as any).__AuthContext = createContext<AuthContextValue | null>(null));
+const AuthContext = ((globalThis as any).__AuthContext || ((globalThis as any).__AuthContext = createContext<AuthContextValue | null>(null))) as React.Context<AuthContextValue | null>;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

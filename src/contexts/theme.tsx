@@ -8,7 +8,7 @@ interface ThemeContextValue {
 }
 
 const STORAGE_KEY = "clientflow.theme";
-const ThemeContext = (globalThis as any).__ThemeContext || ((globalThis as any).__ThemeContext = createContext<ThemeContextValue | null>(null));
+const ThemeContext = ((globalThis as any).__ThemeContext || ((globalThis as any).__ThemeContext = createContext<ThemeContextValue | null>(null))) as React.Context<ThemeContextValue | null>;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");

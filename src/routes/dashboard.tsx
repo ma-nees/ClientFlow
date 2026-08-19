@@ -62,14 +62,14 @@ function DashboardPage() {
         }
       />
 
-      <DemoDataNotice className="mb-6" />
+      <DemoDataNotice className="mb-4" />
 
       {summary.isError ? (
         <ErrorState onRetry={() => summary.refetch()} />
       ) : summary.isLoading || !summary.data ? (
-        <CardsSkeleton count={5} className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5" />
+        <CardsSkeleton count={5} className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5" />
       ) : (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
           <StatCard label="Leads analysed" value={summary.data.stats.analyzed} trend={12} icon={Users} />
           <StatCard label="Total leads" value={summary.data.stats.totalLeads} trend={9} icon={Sparkles} />
           <StatCard label="Emails sent" value={summary.data.stats.emailsSent} trend={6} icon={Mail} />
@@ -78,8 +78,8 @@ function DashboardPage() {
         </div>
       )}
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <section className="panel p-4 sm:p-5 lg:col-span-2">
+      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+        <section className="panel p-3 sm:p-4 lg:col-span-2">
           <h3 className="text-sm font-semibold">Outreach performance</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">Emails sent, replies and interested responses.</p>
           <div className="mt-4">
@@ -91,7 +91,7 @@ function DashboardPage() {
           </div>
         </section>
 
-        <section className="panel p-4 sm:p-5">
+        <section className="panel p-3 sm:p-4">
           <h3 className="text-sm font-semibold">Opportunity mix</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">Where your pipeline value sits today.</p>
           <div className="mt-4">
@@ -106,8 +106,8 @@ function DashboardPage() {
         </section>
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <section className="panel p-4 sm:p-5">
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <section className="panel p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold">Hot leads</h3>
             <Link to="/leads" className="text-xs text-primary hover:underline">
@@ -135,7 +135,7 @@ function DashboardPage() {
           </ul>
         </section>
 
-        <section className="panel p-4 sm:p-5">
+        <section className="panel p-3 sm:p-4">
           <h3 className="text-sm font-semibold">Recent activity</h3>
           <div className="mt-3">
             {activity.data ? <Timeline events={activity.data.slice(0, 8)} /> : <CardsSkeleton count={3} />}

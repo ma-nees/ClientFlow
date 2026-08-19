@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
   BarChart3,
   ChevronLeft,
+  ChevronRight,
   Inbox,
   LayoutDashboard,
   Settings,
@@ -117,19 +118,22 @@ export function SidebarContent({
           to="/settings/profile"
           onClick={onNavigate}
           className={cn(
-            "flex items-center gap-2.5 rounded-md px-1.5 py-1.5 transition-colors hover:bg-sidebar-accent/60",
+            "group flex items-center justify-between gap-2.5 rounded-md px-2 py-1.5 transition-colors hover:bg-sidebar-accent/80",
             collapsed && "justify-center px-0",
           )}
         >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
-            {initials(user?.name ?? "Guest")}
-          </span>
-          {!collapsed && (
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-medium">{user?.name ?? "Guest"}</span>
-              <span className="block truncate text-xs text-muted-foreground">{user?.role ?? "Demo"}</span>
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground shadow-sm ring-1 ring-border/50">
+              {initials(user?.name ?? "Guest")}
             </span>
-          )}
+            {!collapsed && (
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-medium">{user?.name ?? "Guest"}</span>
+                <span className="block truncate text-xs text-muted-foreground">{user?.role ?? "Demo"}</span>
+              </span>
+            )}
+          </div>
+          {!collapsed && <ChevronRight className="size-4 shrink-0 text-muted-foreground opacity-50 transition-opacity group-hover:opacity-100" aria-hidden />}
         </Link>
 
         {onToggleCollapse ? (

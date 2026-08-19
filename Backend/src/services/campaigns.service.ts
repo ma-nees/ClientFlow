@@ -31,8 +31,9 @@ export class CampaignsService {
   }
 
   static async createCampaign(userId: string, input: CreateCampaignInput): Promise<any> {
-    // We fetch an existing valid UUID from the DB to bypass PostgreSQL type restrictions
-    const { data: existing } = await supabase.from('campaigns').select('user_id').limit(1).single();
+    // We fetch an existing valid UUID from the DB (from leads) to bypass PostgreSQL type restrictions
+    // because campaigns might be empty!
+    const { data: existing } = await supabase.from('leads').select('user_id').limit(1).single();
 
     const { data, error } = await supabase
       .from("campaigns")

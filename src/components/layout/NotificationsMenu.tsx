@@ -16,6 +16,7 @@ export function NotificationsMenu() {
 
   const markAllAsRead = () => {
     if (!data) return;
+    localStorage.setItem("notifications_read_timestamp", Date.now().toString());
     queryClient.setQueryData<Notification[]>(queryKeys.notifications, 
       data.map(n => ({ ...n, read: true }))
     );

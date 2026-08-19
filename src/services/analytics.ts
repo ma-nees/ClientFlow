@@ -28,5 +28,9 @@ export async function getActivity(): Promise<ActivityEvent[]> {
 /** GET /api/notifications */
 export async function getNotifications(): Promise<Notification[]> {
   await delay(180);
-  return mockNotifications;
+  const readTimestamp = Number(localStorage.getItem("notifications_read_timestamp") || 0);
+  return mockNotifications.map(n => ({
+    ...n,
+    read: n.read || (new Date(n.at).getTime() <= readTimestamp)
+  }));
 }

@@ -9,7 +9,6 @@ export interface ImportSummary {
   invalidEmails: number;
 }
 
-/** Helper to map Supabase snake_case to frontend camelCase Lead type */
 function mapLead(row: any): Lead {
   return {
     id: row.id,
@@ -26,6 +25,10 @@ function mapLead(row: any): Lead {
     opportunity: row.opportunity as any,
     leadScore: row.lead_score || 0,
     emailStatus: row.email_status as any,
+    aiPitch: row.ai_pitch,
+    aiRecommendation: row.ai_recommendation,
+    analysis: row.analysis,
+    notes: row.notes,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ExternalLink, Mail, Phone, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,16 +33,23 @@ export const Route = createFileRoute("/leads/$id")({
 
 function LeadDetailPage() {
   const { id } = useParams({ from: "/leads/$id" });
+  const queryClient = useQueryClient();
   const lead = useQuery({ queryKey: queryKeys.lead(id), queryFn: () => getLead(id) });
   const activity = useQuery({ queryKey: queryKeys.activity, queryFn: getActivity });
 
   const analyze = useMutation({
     mutationFn: () => analyzeLead(id),
-    onSuccess: () => toast.success("Re-analysing website", { description: "Results update when the scan finishes." }),
+    onSuccess: () => {
+      toast.success("Re-analysing website", { description: "Results update when the scan finishes." });
+      queryClient.invalidateQueries({ queryKey: queryKeys.lead(id) });
+    },
   });
   const pitch = useMutation({
     mutationFn: () => generatePitch(id),
-    onSuccess: () => toast.success("Generating pitch", { description: "A new AI draft is being written." }),
+    onSuccess: () => {
+      toast.success("Generating pitch", { description: "A new AI draft is being written." });
+      queryClient.invalidateQueries({ queryKey: queryKeys.lead(id) });
+    },
   });
 
   if (lead.isLoading) {

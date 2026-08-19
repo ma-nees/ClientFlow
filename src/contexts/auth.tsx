@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
-import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from "firebase/auth";
+import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import type { User } from "@/types";
 
 interface AuthContextValue {
@@ -8,6 +8,8 @@ interface AuthContextValue {
   ready: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  sendMagicLink: (email: string) => Promise<void>;
+  verifyMagicLink: (email: string, url: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -37,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    // Basic email/password sign in can be implemented here if needed in the future
     console.warn("Email/password sign-in is not fully implemented yet");
   }, []);
 
@@ -50,14 +51,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const sendMagicLink = useCallback(async (email: string) => {
+    const actionCodeSettings = {
+      url: window.location.origin + '/login',
+      handleCodeInApp: true,
+    };
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+    window.localStorage.setItem('emailForSignIn', email);
+  }, []);
+
+  const verifyMagicLink = useCallback(async (email: string, url: string) => {
+    if (isSignInWithEmailLink(auth, url)) {
+      await signInWithEmailLink(auth, email, url);
+      window.localStorage.removeItem('emailForSignIn');
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     await firebaseSignOut(auth);
     setUser(null);
   }, []);
 
   const value = useMemo(
-    () => ({ user, ready, signIn, signInWithGoogle, signOut }),
-    [user, ready, signIn, signInWithGoogle, signOut],
+    () => ({ user, ready, signIn, signInWithGoogle, sendMagicLink, verifyMagicLink, signOut }),
+    [user, ready, signIn, signInWithGoogle, sendMagicLink, verifyMagicLink, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

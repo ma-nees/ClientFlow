@@ -51,3 +51,20 @@ export const createLead = async (req: AuthenticatedRequest, res: Response, next:
     next(error);
   }
 };
+
+export const updateLead = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { data, error } = await supabase
+      .from('leads')
+      .update(req.body)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};

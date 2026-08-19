@@ -9,6 +9,7 @@ const router = Router();
 router.get("/", requireAuth, leadsController.getLeads);
 router.post("/", requireAuth, leadsController.createLead);
 router.get("/:id", requireAuth, leadsController.getLead);
+router.patch("/:id", requireAuth, leadsController.updateLead);
 
 // Lead Analysis and AI Pitch Generation routes
 router.post("/:id/analyze", requireAuth, aiController.analyzeLead);

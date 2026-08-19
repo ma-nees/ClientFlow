@@ -66,15 +66,22 @@ export class AiService {
       parsedContent = { subject: "Generated Email", body: content };
     }
 
-    // 4. Update the lead's status in Supabase (Optional but helpful)
-    await supabase.from("leads").update({ email_status: "DRAFTED" }).eq("id", leadId);
+    const subject = parsedContent.subject || "Generated Subject";
+    const body = parsedContent.body || JSON.stringify(parsedContent);
+    const aiPitchString = `Subject: ${subject}\n\n${body}`;
+
+    // 4. Update the lead's status and ai_pitch in Supabase
+    await supabase.from("leads").update({ 
+      email_status: "AI_GENERATED",
+      ai_pitch: aiPitchString 
+    }).eq("id", leadId);
 
     // 5. Create an email draft in the database
     // For now, we just return the payload so the controller can save it or return it
     return {
       leadId,
-      subject: parsedContent.subject || "Generated Subject",
-      body: parsedContent.body || JSON.stringify(parsedContent),
+      subject,
+      body,
     };
   }
 
@@ -124,8 +131,20 @@ export class AiService {
         console.error("Failed to parse Mistral response:", e);
     }
 
+    const analysisData = {
+      status: "UNKNOWN",
+      score: 85,
+      issues: parsedContent.analysis || [],
+      recommendation: "NEW_WEBSITE",
+      analyzedAt: new Date().toISOString(),
+      summary: "Completed automatic analysis based on available lead data."
+    };
+
     // Update lead score or attach analysis notes to the lead
-    await supabase.from("leads").update({ lead_score: 85 }).eq("id", leadId);
+    await supabase.from("leads").update({ 
+      lead_score: 85,
+      analysis: analysisData
+    }).eq("id", leadId);
 
     return {
       leadId,

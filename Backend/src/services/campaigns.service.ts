@@ -41,7 +41,6 @@ export class CampaignsService {
         name: input.name,
         target: input.target,
         daily_limit: input.dailyLimit,
-        randomized_delay: input.randomizedDelay ?? true,
         status: "ACTIVE",
       })
       .select()

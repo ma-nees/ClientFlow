@@ -40,14 +40,12 @@ function LeadDetailPage() {
   const analyze = useMutation({
     mutationFn: () => analyzeLead(id),
     onSuccess: () => {
-      toast.success("Re-analysing website", { description: "Results update when the scan finishes." });
       queryClient.invalidateQueries({ queryKey: queryKeys.lead(id) });
     },
   });
   const pitch = useMutation({
     mutationFn: () => generatePitch(id),
     onSuccess: () => {
-      toast.success("Generating pitch", { description: "A new AI draft is being written." });
       queryClient.invalidateQueries({ queryKey: queryKeys.lead(id) });
     },
   });
@@ -99,11 +97,32 @@ function LeadDetailPage() {
         subtitle={`${data.industry} · ${data.city}, ${data.country}`}
         actions={
           <>
-            <Button variant="outline" onClick={() => analyze.mutate()} disabled={analyze.isPending}>
-              <RefreshCw className="size-4" aria-hidden /> Re-analyse website
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                toast.promise(analyze.mutateAsync(), {
+                  loading: "Re-analysing website...",
+                  success: "Analysis complete! Results have been updated.",
+                  error: "Failed to analyse website"
+                });
+              }} 
+              disabled={analyze.isPending}
+            >
+              <RefreshCw className={`size-4 ${analyze.isPending ? "animate-spin" : ""}`} aria-hidden /> 
+              {analyze.isPending ? "Analysing..." : "Re-analyse website"}
             </Button>
-            <Button onClick={() => pitch.mutate()} disabled={pitch.isPending}>
-              <Sparkles className="size-4" aria-hidden /> Generate pitch
+            <Button 
+              onClick={() => {
+                toast.promise(pitch.mutateAsync(), {
+                  loading: "Generating AI pitch...",
+                  success: "A new pitch has been written.",
+                  error: "Failed to generate pitch"
+                });
+              }} 
+              disabled={pitch.isPending}
+            >
+              <Sparkles className={`size-4 ${pitch.isPending ? "animate-pulse" : ""}`} aria-hidden /> 
+              {pitch.isPending ? "Generating..." : "Generate pitch"}
             </Button>
           </>
         }
@@ -224,8 +243,20 @@ function LeadDetailPage() {
         <section className="panel p-4 sm:p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold">Generated pitch</h3>
-            <Button variant="ghost" size="sm" onClick={() => pitch.mutate()}>
-              <RefreshCw className="size-3.5" aria-hidden /> Regenerate
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                toast.promise(pitch.mutateAsync(), {
+                  loading: "Generating AI pitch...",
+                  success: "A new pitch has been written.",
+                  error: "Failed to generate pitch"
+                });
+              }} 
+              disabled={pitch.isPending}
+            >
+              <RefreshCw className={`size-3.5 ${pitch.isPending ? "animate-spin" : ""}`} aria-hidden /> 
+              {pitch.isPending ? "Regenerating..." : "Regenerate"}
             </Button>
           </div>
           {data.aiPitch ? (

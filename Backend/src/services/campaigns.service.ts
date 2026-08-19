@@ -82,6 +82,23 @@ export class CampaignsService {
         lead_id: leadId,
       }));
       await supabase.from("campaign_leads").insert(links);
+    } else {
+      // Auto-assign leads that match the target opportunity
+      const { data: matchingLeads } = await supabase
+        .from("leads")
+        .select("id")
+        .eq("opportunity", input.target);
+        
+      if (matchingLeads && matchingLeads.length > 0) {
+        const links = matchingLeads.map(lead => ({
+          campaign_id: data.id,
+          lead_id: lead.id,
+        }));
+        await supabase.from("campaign_leads").insert(links);
+        
+        // Update the leadCount variable for the return object
+        data.total_leads = matchingLeads.length;
+      }
     }
 
     return {

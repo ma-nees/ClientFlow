@@ -14,10 +14,10 @@ export function OpportunityBreakdown({ data }: { data: { label: string; value: n
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <div className="h-[180px] w-full sm:w-[180px]">
+      <div className="h-[160px] w-[160px] mx-auto shrink-0 sm:mx-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="label" innerRadius={52} outerRadius={78} paddingAngle={2}>
+            <Pie data={data} dataKey="value" nameKey="label" innerRadius={46} outerRadius={72} paddingAngle={2}>
               {data.map((item, index) => (
                 <Cell key={item.label} fill={palette[index % palette.length]} stroke="var(--color-card)" />
               ))}

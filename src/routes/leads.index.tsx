@@ -50,10 +50,15 @@ function LeadsPage() {
 
   const pitch = useMutation({
     mutationFn: (leadIds: string[]) => Promise.all(leadIds.map((id) => generatePitch(id))),
-    onSuccess: (_data, leadIds) =>
+    onSuccess: (_data, leadIds) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.leads });
       toast.success("Generating pitches", {
         description: `${leadIds.length} personalised draft${leadIds.length === 1 ? "" : "s"} queued.`,
-      }),
+      });
+    },
+    onError: (error: any) => {
+      toast.error("Failed to generate pitches", { description: error.message });
+    }
   });
 
   const filtered = useMemo(() => {

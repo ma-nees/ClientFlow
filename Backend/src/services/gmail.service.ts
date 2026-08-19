@@ -81,9 +81,52 @@ export class GmailService {
       .update({
         gmail_access_token: null,
         gmail_refresh_token: null,
-        gmail_connected_at: null,
-        gmail_email: null,
       })
       .eq("firebase_uid", firebaseUid);
+  }
+
+  static async sendEmail(firebaseUid: string, to: string, subject: string, body: string): Promise<void> {
+    const { data: profile, error } = await supabase
+      .from("user_profiles")
+      .select("gmail_access_token, gmail_refresh_token")
+      .eq("firebase_uid", firebaseUid)
+      .single();
+
+    if (error || !profile?.gmail_refresh_token) {
+      throw new Error("Gmail account not connected.");
+    }
+
+    const { google } = await import("googleapis");
+    const oauth2Client = getGmailOAuth2Client();
+    oauth2Client.setCredentials({
+      access_token: profile.gmail_access_token,
+      refresh_token: profile.gmail_refresh_token,
+    });
+
+    const gmail = google.gmail({ version: "v1", auth: oauth2Client });
+
+    const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
+    const messageParts = [
+      `To: ${to}`,
+      `Subject: ${utf8Subject}`,
+      "Content-Type: text/plain; charset=utf-8",
+      "MIME-Version: 1.0",
+      "",
+      body,
+    ];
+    const message = messageParts.join("\r\n");
+
+    const encodedMessage = Buffer.from(message)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: encodedMessage,
+      },
+    });
   }
 }

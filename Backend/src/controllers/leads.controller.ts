@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { supabase } from "../config/supabase";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
+import { GmailService } from "../services/gmail.service";
 
 export const getLeads = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
@@ -55,6 +56,22 @@ export const createLead = async (req: AuthenticatedRequest, res: Response, next:
 export const updateLead = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+
+    if (req.body.email_status === "APPROVED") {
+      const { data: lead } = await supabase.from('leads').select('*').eq('id', id).single();
+      if (lead && lead.ai_pitch) {
+        const parts = lead.ai_pitch.split('\n\n');
+        let subject = parts[0];
+        if (subject.startsWith("Subject: ")) {
+          subject = subject.replace("Subject: ", "").trim();
+        }
+        const body = parts.slice(1).join('\n\n').trim();
+
+        await GmailService.sendEmail(req.user!.uid, lead.email, subject, body);
+        req.body.email_status = "SENT";
+      }
+    }
+
     const { data, error } = await supabase
       .from('leads')
       .update(req.body)

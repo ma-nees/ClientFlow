@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { Bell } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -7,10 +7,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatRelative } from "@/lib/format";
 import { queryKeys } from "@/services/api";
 import { getNotifications } from "@/services/analytics";
+import type { Notification } from "@/types";
 
 export function NotificationsMenu() {
+  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: queryKeys.notifications, queryFn: getNotifications });
   const unread = data?.filter((n) => !n.read).length ?? 0;
+
+  const markAllAsRead = () => {
+    if (!data) return;
+    queryClient.setQueryData<Notification[]>(queryKeys.notifications, 
+      data.map(n => ({ ...n, read: true }))
+    );
+  };
 
   return (
     <Popover>
@@ -28,8 +37,15 @@ export function NotificationsMenu() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
-          <p className="text-sm font-semibold">Notifications</p>
-          <span className="text-xs text-muted-foreground">{unread} unread</span>
+          <div>
+            <p className="text-sm font-semibold">Notifications</p>
+            <p className="text-xs text-muted-foreground">{unread} unread</p>
+          </div>
+          {unread > 0 && (
+            <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-8 text-xs">
+              <Check className="mr-1.5 size-3" aria-hidden /> Mark as read
+            </Button>
+          )}
         </div>
         <ul className="max-h-80 divide-y overflow-y-auto">
           {isLoading

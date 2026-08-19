@@ -19,15 +19,52 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { user, ready, signInWithGoogle } = useAuth();
+  const { user, ready, signInWithGoogle, sendMagicLink, verifyMagicLink } = useAuth();
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     if (ready && user) navigate({ to: "/dashboard" });
   }, [ready, user, navigate]);
 
+  useEffect(() => {
+    // Check if coming back from email link
+    const url = window.location.href;
+    if (url.includes("apiKey") && url.includes("oobCode")) {
+      let savedEmail = window.localStorage.getItem("emailForSignIn");
+      if (!savedEmail) {
+        savedEmail = window.prompt("Please provide your email for confirmation");
+      }
+      if (savedEmail) {
+        verifyMagicLink(savedEmail, url)
+          .then(() => {
+            toast.success("Successfully signed in with email!");
+            navigate({ to: "/dashboard" });
+          })
+          .catch((error) => {
+            toast.error("Error signing in with email link", { description: error.message });
+          });
+      }
+    }
+  }, [verifyMagicLink, navigate]);
 
+  const handleMagicLink = async () => {
+    if (!email) {
+      toast.error("Please enter your email address first.");
+      return;
+    }
+    try {
+      setIsSending(true);
+      await sendMagicLink(email);
+      toast.success("Magic link sent! Please check your email.");
+    } catch (error: any) {
+      toast.error("Failed to send link", { description: error.message });
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
@@ -43,12 +80,10 @@ function LoginPage() {
 
           <div className="mt-8 2xl:mt-12">
             <h1 className="text-2xl font-bold tracking-tight text-foreground 2xl:text-3xl">
-              {isSignUp ? "Create an account" : "Welcome back"}
+              Welcome
             </h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              {isSignUp
-                ? "Sign up to start finding leads, analyzing websites, and automating your agency's outreach."
-                : "Sign in to your workspace to manage leads, generate AI pitches, and automate outreach."}
+              Sign in or create an account to start finding leads, analyzing websites, and automating your agency's outreach.
             </p>
           </div>
 
@@ -61,33 +96,18 @@ function LoginPage() {
                 <input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="flex h-11 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Password
-                  </label>
-                  {!isSignUp && (
-                    <a href="#" className="text-xs text-muted-foreground hover:text-primary hover:underline">
-                      Forgot password?
-                    </a>
-                  )}
-                </div>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
                   className="flex h-11 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <Button
                 className="w-full h-11 text-base font-medium"
-                onClick={() => toast.info(`${isSignUp ? "Sign up" : "Email login"} is disabled in this demo. Please use Google.`)}
+                onClick={handleMagicLink}
+                disabled={isSending}
               >
-                {isSignUp ? "Create account" : "Sign in with Email"}
+                {isSending ? "Sending link..." : "Continue with Email"}
               </Button>
             </div>
 
@@ -136,15 +156,7 @@ function LoginPage() {
             </Button>
           </div>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-            <button
-              className="font-semibold text-primary hover:underline"
-              onClick={() => setIsSignUp(!isSignUp)}
-            >
-              {isSignUp ? "Sign in" : "Sign up"}
-            </button>
-          </p>
+
 
           <p className="mt-6 text-center text-xs leading-relaxed text-muted-foreground">
             By continuing, you agree to our{" "}

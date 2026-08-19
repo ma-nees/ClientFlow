@@ -42,7 +42,7 @@ export function AddLeadDialog() {
       setForm(emptyForm);
       toast.success("Lead added", { description: `${lead.businessName} is queued for website analysis.` });
     },
-    onError: () => toast.error("Could not add lead", { description: "Please try again." }),
+    onError: (error: any) => toast.error("Could not add lead", { description: error.message || "Please try again." }),
   });
 
   const set = (key: keyof typeof emptyForm) => (event: React.ChangeEvent<HTMLInputElement>) =>

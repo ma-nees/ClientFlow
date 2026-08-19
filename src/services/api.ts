@@ -8,9 +8,6 @@
 
 export const API_BASE_URL: string = import.meta.env['VITE_API_BASE_URL'] ?? "";
 
-/** No backend is connected yet, so all data in the UI is clearly labelled demo data. */
-export const USE_MOCK_DATA = !API_BASE_URL;
-
 export class ApiError extends Error {
   status: number;
   constructor(message: string, status = 500) {
@@ -33,10 +30,6 @@ import { auth } from "../lib/firebase";
  * Thin fetch wrapper for the future backend.
  */
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  if (USE_MOCK_DATA) {
-    throw new ApiError(`No backend connected. ${path} is served from demo data.`, 501);
-  }
-
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(init?.headers as Record<string, string> ?? {}),

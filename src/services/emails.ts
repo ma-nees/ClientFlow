@@ -25,7 +25,7 @@ function mapLeadToEmail(lead: any): EmailMessage {
   };
 }
 
-/** GET /api/emails (mocked by fetching leads with pitches) */
+/** GET /api/emails */
 export async function listEmails(): Promise<EmailMessage[]> {
   const leads = await listLeads();
   return leads

@@ -1,8 +1,5 @@
-import { mockGmail } from "@/data/mock";
 import type { GmailConnection, SendingSettings } from "@/types";
-import { mockSendingSettings } from "@/data/mock";
 import { delay } from "./api";
-
 import { request } from "./api";
 
 /** GET /api/gmail/status */
@@ -28,7 +25,17 @@ export async function disconnectGmail(): Promise<void> {
 /** GET /api/settings/sending */
 export async function getSendingSettings(): Promise<SendingSettings> {
   await delay(200);
-  return mockSendingSettings;
+  return {
+    dailyLimit: 100,
+    minDelayMinutes: 5,
+    maxDelayMinutes: 15,
+    requireManualApproval: true,
+    stopFollowUpOnReply: true,
+    workingHoursOnly: true,
+    workingHoursStart: "09:00",
+    workingHoursEnd: "17:00",
+    timezone: "UTC",
+  };
 }
 
 /** PUT /api/settings/sending */

@@ -134,13 +134,13 @@ function LeadDetailPage() {
           <dl className="mt-3 space-y-2.5 text-sm">
             <div>
               <dt className="text-eyebrow">Contact person</dt>
-              <dd>{data.contactName}</dd>
+              <dd className="truncate">{data.contactName}</dd>
             </div>
             <div>
               <dt className="text-eyebrow">Email</dt>
-              <dd className="flex items-center gap-1.5">
-                <Mail className="size-3.5 text-muted-foreground" aria-hidden />
-                <a href={`mailto:${data.email}`} className="hover:text-primary">
+              <dd className="flex items-center gap-1.5 min-w-0">
+                <Mail className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                <a href={`mailto:${data.email}`} className="hover:text-primary truncate">
                   {data.email}
                 </a>
               </dd>
@@ -148,23 +148,23 @@ function LeadDetailPage() {
             {data.phone ? (
               <div>
                 <dt className="text-eyebrow">Phone</dt>
-                <dd className="flex items-center gap-1.5">
-                  <Phone className="size-3.5 text-muted-foreground" aria-hidden />
-                  {data.phone}
+                <dd className="flex items-center gap-1.5 min-w-0">
+                  <Phone className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                  <span className="truncate">{data.phone}</span>
                 </dd>
               </div>
             ) : null}
             <div>
               <dt className="text-eyebrow">Website</dt>
-              <dd>
+              <dd className="flex items-center gap-1.5 min-w-0">
                 {data.website ? (
                   <a
                     href={data.website}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="flex items-center gap-1.5 hover:text-primary"
+                    className="flex items-center gap-1.5 hover:text-primary min-w-0 w-full"
                   >
-                    <ExternalLink className="size-3.5" aria-hidden />
+                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                     <span className="truncate">{data.website}</span>
                   </a>
                 ) : (

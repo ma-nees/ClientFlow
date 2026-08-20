@@ -32,11 +32,11 @@ export function LeadsTable(props: LeadsTableProps) {
     <>
       {/* Desktop / tablet table */}
       <div className="hidden overflow-x-auto md:block">
-        <table className="w-full min-w-[980px] text-sm">
+        <table className="w-full text-sm">
           <caption className="sr-only">Leads with website opportunity analysis</caption>
           <thead>
             <tr className="border-b bg-muted/40 text-left">
-              <th scope="col" className="w-10 px-4 py-2.5">
+              <th scope="col" className="w-10 px-2 py-2.5">
                 <Checkbox
                   checked={props.leads.length > 0 && props.selected.length === props.leads.length}
                   onCheckedChange={props.onToggleAll}
@@ -45,7 +45,7 @@ export function LeadsTable(props: LeadsTableProps) {
               </th>
               {["Business", "Contact", "Location", "Website", "Opportunity", "Score", "Email status", "Added", ""].map(
                 (heading) => (
-                  <th key={heading} scope="col" className="px-4 py-2.5 text-eyebrow font-semibold">
+                  <th key={heading} scope="col" className="px-2 py-2.5 text-eyebrow font-semibold">
                     {heading}
                   </th>
                 ),
@@ -55,27 +55,27 @@ export function LeadsTable(props: LeadsTableProps) {
           <tbody className="divide-y">
             {props.leads.map((lead) => (
               <tr key={lead.id} className="transition-colors hover:bg-muted/40">
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <Checkbox
                     checked={props.selected.includes(lead.id)}
                     onCheckedChange={() => props.onToggle(lead.id)}
                     aria-label={`Select ${lead.businessName}`}
                   />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <Link to="/leads/$id" params={{ id: lead.id }} className="font-medium hover:text-primary">
                     {lead.businessName}
                   </Link>
                   <p className="text-xs text-muted-foreground">{lead.industry}</p>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <p>{lead.contactName}</p>
                   <p className="truncate text-xs text-muted-foreground">{lead.email}</p>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
+                <td className="px-2 py-3 whitespace-nowrap text-muted-foreground">
                   {lead.city}, {lead.country}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   {lead.website ? (
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <ExternalLink className="size-3" aria-hidden />
@@ -88,19 +88,19 @@ export function LeadsTable(props: LeadsTableProps) {
                     <WebsiteStatusBadge status={lead.websiteStatus} />
                   </div>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <OpportunityBadge opportunity={lead.opportunity} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <ScorePill score={lead.leadScore} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <EmailStatusBadge status={lead.emailStatus} />
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground">
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-muted-foreground">
                   {formatDate(lead.createdAt)}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-2 py-3 text-right">
                   <RowActions lead={lead} onGeneratePitch={props.onGeneratePitch} onDelete={props.onDelete} />
                 </td>
               </tr>

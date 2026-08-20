@@ -81,6 +81,8 @@ export class GmailService {
       .update({
         gmail_access_token: null,
         gmail_refresh_token: null,
+        gmail_connected_at: null,
+        gmail_email: null,
       })
       .eq("firebase_uid", firebaseUid);
   }
